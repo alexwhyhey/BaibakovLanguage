@@ -9,14 +9,20 @@
       Title="Clients">
 
     <Grid>
-
-        <ListView Name="ClientsView">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        
+        <ListView Name="ClientsView" Grid.Row="2">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="500"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
@@ -52,7 +58,7 @@
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
 
-                            
+
                             <TextBlock Text="{Binding ID, StringFormat={}ID:  {0}}" Grid.Column="0" Grid.Row="0" Margin="3"/>
                             <TextBlock Text="{Binding GenderCode, StringFormat={}Пол:  {0}}" Grid.Column="0" Grid.Row="1" Margin="3"/>
                             <TextBlock Text="{Binding Phone, StringFormat={}Телефон: {0}}" Grid.Column="0" Grid.Row="2" Margin="3"/>
@@ -66,10 +72,26 @@
 
                         </Grid>
 
+                        <Button Name="ClientDeleteBtn" Grid.Column="2" Grid.RowSpan="5" HorizontalAlignment="Right" Content="Удалить" Click="ClientDeleteBtn_Click"></Button>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <TextBlock Name="TBCount" FontSize="20" Height="20"/>
+            <TextBlock Name="TBAllRecords" FontSize="20" Height="20"/>
+
+            <Button Name="LeftDirButton" Content="&lt;" Width="20" Height="20" Click="LeftDirButton_Click"></Button>
+            <ListBox FontSize="20" Name="PageListBox" MouseUp="PageListBox_MouseUp">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
+            <Button Name="RightDirButton" Content="&gt;" Width="20" Height="20" Click="RightDirButton_Click"/>
+        </StackPanel>
         
     </Grid>
 </Page>

@@ -112,7 +112,7 @@ namespace BaibakovLanguage
 
                     return lastJoinItem.Count();
                 }
-                catch (Exception ex)
+                catch
                 {
                     return 0;
                 }
