@@ -35,6 +35,14 @@ namespace BaibakovLanguage
             }
         }
         public string GenderCode { get; set; }
+
+        public string GenderExtended
+        {
+            get
+            {
+                return this.Gender.Name;
+            }
+        }
         public string Phone { get; set; }
         public string PhotoPath { get; set; }
         public string PhotoString

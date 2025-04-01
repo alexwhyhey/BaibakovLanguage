@@ -31,22 +31,25 @@ namespace BaibakovLanguage
         {
             InitializeComponent();
 
+            colvoCB.SelectedIndex = 0;
+            SexCB.SelectedIndex = 0;
+            SortCB.SelectedIndex = 0;
             ClientsView.ItemsSource = Baibakov_languageEntities.GetContext().Client.ToList();
             UpdateClients();
         }
 
-        private void ChangePage(int direction, int? selectedPage)
+        private void ChangePage(int direction, int? selectedPage, int colvo)
         {
             CurrentPageList.Clear();
             CountRecords = TableList.Count;
 
-            if (CountRecords % 10 > 0)
+            if (CountRecords % colvo > 0)
             {
-                CountPage = CountRecords / 10 + 1;
+                CountPage = CountRecords / colvo + 1;
             }
             else
             {
-                CountPage = CountRecords / 10;
+                CountPage = CountRecords / colvo;
             }
 
             Boolean ifUpdate = true;
@@ -58,8 +61,8 @@ namespace BaibakovLanguage
                 if (selectedPage >= 0 && selectedPage <= CountPage)
                 {
                     CurrentPage = (int)selectedPage;
-                    min = CurrentPage * 10 + 10 < CountRecords ? CurrentPage * 10 + 10 : CountRecords;
-                    for (int i = CurrentPage * 10; i < min; i++)
+                    min = CurrentPage * colvo + colvo < CountRecords ? CurrentPage * colvo + colvo : CountRecords;
+                    for (int i = CurrentPage * colvo; i < min; i++)
                     {
                         CurrentPageList.Add(TableList[i]);
                     }
@@ -73,8 +76,8 @@ namespace BaibakovLanguage
                         if (CurrentPage > 0)
                         {
                             CurrentPage--;
-                            min = CurrentPage * 10 + 10 < CountRecords ? CurrentPage * 10 + 10 : CountRecords;
-                            for (int i = CurrentPage * 10; i < min; i++)
+                            min = CurrentPage * colvo + colvo < CountRecords ? CurrentPage * colvo + colvo : CountRecords;
+                            for (int i = CurrentPage * colvo; i < min; i++)
                             {
                                 CurrentPageList.Add(TableList[i]);
                             }
@@ -88,8 +91,8 @@ namespace BaibakovLanguage
                         if (CurrentPage < CountPage - 1)
                         {
                             CurrentPage++;
-                            min = CurrentPage * 10 + 10 < CountRecords ? CurrentPage * 10 + 10 : CountRecords;
-                            for (int i = CurrentPage * 10; i < min; i++)
+                            min = CurrentPage * colvo + colvo < CountRecords ? CurrentPage * colvo + colvo : CountRecords;
+                            for (int i = CurrentPage * colvo; i < min; i++)
                             {
                                 CurrentPageList.Add(TableList[i]);
                             }
@@ -115,20 +118,72 @@ namespace BaibakovLanguage
                 ClientsView.ItemsSource = CurrentPageList;
                 ClientsView.Items.Refresh();
 
-                min = CurrentPage * 10 + 10 < CountRecords ? CurrentPage * 10 + 10 : CountRecords;
-                TBCount.Text = min.ToString();
-                TBAllRecords.Text = " из " + CountRecords.ToString();
+                min = CurrentPage * colvo + 10 < CountRecords ? CurrentPage * colvo + colvo : CountRecords;
+
+            }
+        }
+
+        private int selectedCountPage()
+        {
+            switch (colvoCB.SelectedIndex)
+            {
+                case 0: return 10;
+                case 1: return 50;
+                case 2: return 200;
+                default:
+                    return Baibakov_languageEntities.GetContext().Client.Count();
+
             }
         }
 
         private void UpdateClients()
         {
-            var currentServices = Baibakov_languageEntities.GetContext().Client.ToList();
+            var currentClients = Baibakov_languageEntities.GetContext().Client.ToList();
 
-            ClientsView.ItemsSource = currentServices;
-            TableList = currentServices;
+            switch (SexCB.SelectedIndex)
+            {
+                case 0:
+                    break;
+                case 1:
+                    currentClients = currentClients.Where(p => p.GenderCode == "ж").ToList();
+                    break;
+                case 2:
+                    currentClients = currentClients.Where(p => p.GenderCode == "м").ToList();
+                    break;
+            }
 
-            ChangePage(0, 0);
+            switch (SortCB.SelectedIndex)
+            {
+                case 0:
+                    break;
+                case 1:
+                    currentClients = currentClients.OrderBy(p => p.LastName).ToList();
+                    break;
+                case 2:
+                    currentClients = currentClients.OrderBy(p => p.lastJoin).ToList();
+                    break;
+                case 3:
+                    currentClients = currentClients.OrderByDescending(p => p.countOfJoins).ToList();
+                    break;
+            }
+
+            if (!string.IsNullOrWhiteSpace(SearcTB.Text))
+            {
+                currentClients = currentClients.Where(p =>
+                p.ClientNamesMerge.ToLower().Contains(SearcTB.Text.ToLower()) ||
+                p.Email.ToLower().Contains(SearcTB.Text.ToLower()) ||
+                p.Phone.Replace("-", "").Replace("(", "").Replace(")", "").ToLower().Contains(SearcTB.Text.ToLower())
+                ).ToList();
+            }
+
+            TableList = currentClients;
+
+            ClientsView.ItemsSource = currentClients;
+
+            TBCount.Text = currentClients.Count().ToString();
+            TBAllRecords.Text = " из " + Baibakov_languageEntities.GetContext().Client.Count().ToString();
+
+            ChangePage(0, 0, selectedCountPage());
         }
 
         private void ClientDeleteBtn_Click(object sender, RoutedEventArgs e)
@@ -166,17 +221,37 @@ namespace BaibakovLanguage
 
         private void LeftDirButton_Click(object sender, RoutedEventArgs e)
         {
-            ChangePage(1, null);
+            ChangePage(1, null, selectedCountPage());
         }
 
         private void RightDirButton_Click(object sender, RoutedEventArgs e)
         {
-            ChangePage(2, null);
+            ChangePage(2, null, selectedCountPage());
         }
 
         private void PageListBox_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            ChangePage(0, Convert.ToInt32(PageListBox.SelectedItem.ToString()) - 1);
+            ChangePage(0, Convert.ToInt32(PageListBox.SelectedItem.ToString()) - 1, selectedCountPage());
+        }
+
+        private void colvoCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateClients();
+        }
+
+        private void SortCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateClients();
+        }
+
+        private void SexCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateClients();
+        }
+
+        private void SearcTB_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdateClients();
         }
     }
 }
