@@ -13,7 +13,7 @@ namespace BaibakovLanguage
     using System;
     using System.Collections.Generic;
     using System.Linq;
-
+    
     public partial class Client
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -70,6 +70,20 @@ namespace BaibakovLanguage
                     return "не указано";
                 }
             }
+            
+            set
+            {
+                var new_date = new DateTime();
+                if (DateTime.TryParse(value, out new_date))
+                {
+                    this.Birthday = new_date;
+                } else
+                {
+                    this.Birthday = DateTime.MinValue;
+                }
+
+
+            }
         }
 
         public string Email { get; set; }
@@ -82,7 +96,7 @@ namespace BaibakovLanguage
                 {
                     return RegistrationDate.ToShortDateString();
                 }
-
+    
                 return "";
             }
         }
@@ -102,10 +116,29 @@ namespace BaibakovLanguage
 
                 if (lastJoinItem.Count() != 0)
                 {
-                    return lastJoinItem.Distinct().First().StartTime.ToShortDateString();
+                    return lastJoinItem.OrderByDescending(p => p.StartTime).First().StartTime.ToShortDateString();
                 } else
                 {
                     return "нету";
+                }
+            }
+        }
+
+        public DateTime lastJoinInDate
+        {
+            get
+            {
+                var lastJoinItem = Baibakov_languageEntities.GetContext().ClientService.Where(p => (p.ClientID == this.ID));
+
+                if (lastJoinItem.Count() != 0)
+                {
+                    var return_date = new DateTime();
+                    DateTime.TryParse(lastJoinItem.OrderByDescending(p => p.StartTime).First().StartTime.ToShortDateString(), out return_date);
+                    return return_date;
+                }
+                else
+                {
+                    return DateTime.MinValue;
                 }
             }
         }

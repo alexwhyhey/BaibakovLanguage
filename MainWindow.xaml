@@ -19,9 +19,9 @@
             <TextBlock Text="Baibakov Language School" VerticalAlignment="Center" Margin="15" Foreground="#FF04A0FF" FontSize="25"/>
         </StackPanel>
 
-        <Frame Name="MainFrame" Grid.Row="1">
-            
-        </Frame>
+
+        <Frame Name="MainFrame" Grid.Row="1" ContentRendered="MainFrame_ContentRendered" NavigationUIVisibility="Hidden"/>
+        <Button Content="Назад" Name="BtnBack" HorizontalAlignment="Right" Margin="5" Click="BtnBack_Click"/>
 
         <TextBlock Text="Some Text On The End Of The Frame" Grid.Row="2" HorizontalAlignment="Center"/>
 

@@ -160,7 +160,7 @@ namespace BaibakovLanguage
                     currentClients = currentClients.OrderBy(p => p.LastName).ToList();
                     break;
                 case 2:
-                    currentClients = currentClients.OrderBy(p => p.lastJoin).ToList();
+                    currentClients = currentClients.OrderByDescending(p => p.lastJoinInDate).ToList();
                     break;
                 case 3:
                     currentClients = currentClients.OrderByDescending(p => p.countOfJoins).ToList();
@@ -250,6 +250,21 @@ namespace BaibakovLanguage
         }
 
         private void SearcTB_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdateClients();
+        }
+
+        private void AddBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Manager.MainFrame.Navigate(new AddEditPage(null));
+        }
+
+        private void EditBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Manager.MainFrame.Navigate(new AddEditPage(((sender as Button).DataContext as Client)));
+        }
+
+        private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             UpdateClients();
         }

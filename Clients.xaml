@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:BaibakovLanguage"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800" FontFamily="Comic Sans MS" FontSize="12"
-      Title="Clients">
+      Title="Clients" IsVisibleChanged="Page_IsVisibleChanged">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -19,12 +19,12 @@
         <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
             <StackPanel Orientation="Horizontal" Margin="10">
                 <TextBlock Text="Поиск:  " Margin="5" FontSize="16"/>
-                <TextBox Name="SearcTB" TextChanged="SearcTB_TextChanged" Width="250" />
+                <TextBox Name="SearcTB" TextChanged="SearcTB_TextChanged" Width="200" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" Margin="10">
                 <TextBlock Text="Пол:  " Margin="5" FontSize="16"/>
-                <ComboBox Name="SexCB" SelectionChanged="SexCB_SelectionChanged" Width="100">
+                <ComboBox Name="SexCB" SelectionChanged="SexCB_SelectionChanged" Width="75">
                     <TextBlock Text="Любой"/>
                     <TextBlock Text="Женский"/>
                     <TextBlock Text="Мужской"/>
@@ -33,13 +33,15 @@
 
             <StackPanel Orientation="Horizontal" Margin="10">
                 <TextBlock Text="Сортировка:  " Margin="5" FontSize="16"/>
-                <ComboBox Name="SortCB" SelectionChanged="SortCB_SelectionChanged" Width="300">
+                <ComboBox Name="SortCB" SelectionChanged="SortCB_SelectionChanged" Width="250">
                     <TextBlock Text="нет"/>
                     <TextBlock Text="по фамилии от А до Я"/>
                     <TextBlock Text="по дате последнего посещения"/>
                     <TextBlock Text="по количеству посещения"/>
                 </ComboBox>
             </StackPanel>
+
+            <Button Name="AddBtn" Width="125" Content="Добавить" Margin="10" Click="AddBtn_Click"/>
 
         </StackPanel>
         
@@ -99,7 +101,10 @@
 
                         </Grid>
 
-                        <Button Name="ClientDeleteBtn" Grid.Column="2" Grid.RowSpan="5" HorizontalAlignment="Right" Content="Удалить" Click="ClientDeleteBtn_Click"></Button>
+                        <StackPanel Grid.Column="2" Grid.RowSpan="5" VerticalAlignment="Center">
+                            <Button Name="ClientDeleteBtn" HorizontalAlignment="Right" Content="Удалить" Click="ClientDeleteBtn_Click"></Button>
+                            <Button Name="EditBtn" Content="Изменить" Click="EditBtn_Click"/>
+                        </StackPanel>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
